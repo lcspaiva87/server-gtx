@@ -1,5 +1,5 @@
 import { FastifyInstance, FastifyReply, FastifyRequest } from 'fastify'
-import { ensureAuthenticated } from '../middlewares/ensureAuthenticated'
+import { ensuredAuthenticated } from '../middlewares/ensureAuthenticated'
 import { AuthenticateUserController } from '../useCases/authenticateUser/AuthenticateUserController'
 import { CreateUserController } from '../useCases/createUser/CreateUserController'
 import { RefreshTokenUserController } from '../useCases/refreshTokenUser/RefreshTokenUserController'
@@ -15,7 +15,7 @@ async function userRoutes(fastify: FastifyInstance) {
 
   fastify.get(
     '/course',
-    { preHandler: ensureAuthenticated },
+    { preHandler: ensuredAuthenticated },
     (req: FastifyRequest, reply: FastifyReply) => {
       return reply.send([
         {

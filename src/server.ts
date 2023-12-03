@@ -12,7 +12,7 @@ app.register(userKanban)
 app.register(rolesRoutes)
 app.register(permissionRoutes)
 app.register(tagRoutes)
-app.register(jwt, { secret: '14308240-68e9-4821-a8a3-a6111f37e3df' })
+app.register(jwt, { secret:  String(process.env.SECRET_TOKEN) })
 const port = parseInt(process.env.PORT || '5000', 10)
 try {
   app.listen(

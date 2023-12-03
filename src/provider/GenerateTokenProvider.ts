@@ -1,11 +1,11 @@
 import { User } from '@prisma/client'
+import 'dotenv/config'
 import { sign } from 'jsonwebtoken'
-
 class GenerateTokenProvider {
   async execute(userId: string, user: User) {
-    const token = sign({ user }, '14308240-68e9-4821-a8a3-a6111f37e3df', {
+    const token = sign({ user }, String(process.env.SECRET_TOKEN), {
       subject: userId,
-      expiresIn: '50s',
+      expiresIn: '1d',
     })
 
     return token
