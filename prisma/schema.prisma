@@ -1,0 +1,211 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "mysql"
+  url      = env("DATABASE_URL")
+}
+
+model RefreshToken {
+  id        String @id @default(uuid())
+  expiresIn Int
+  userId    String @unique
+  user      User   @relation(fields: [userId], references: [idUser])
+
+  @@map("Refresh_Token")
+}
+
+model User {
+  idUser                           String                             @id @default(uuid())
+  username                         String                             @unique @db.VarChar(50)
+  email                            String?                            @unique
+  avatar                           String?                            @default("https://www.patasdacasa.com.br/sites/patasdacasa/files/styles/webp/public/2023-05/Gato-surdo1.jpg.webp?itok=ppfgdxES")
+  password                         String                             @db.VarChar(100)
+  Column                           Column[]
+  Task                             Task[]
+  Company                          Company[]
+  session                          DateTime?                          @default(now()) @map("session")
+  RegistrationofNatureofOccurrence RegistrationofNatureofOccurrence[]
+  Sectors                          Sectors[]
+  office                           String?                            @db.VarChar(100)
+  checklist                        Checklist[]
+  status                           String?                            @db.VarChar(100)
+  Tabel                            Tabel[]
+  companyUser                      companyUser[]
+  name                             String                             @db.VarChar(50)
+  RefreshToken                     RefreshToken?
+  creationDate                     DateTime                           @default(now()) @map("creationDate")
+  UsersPermissions                 UsersPermissions[]
+
+  @@map("User")
+}
+
+model Column {
+  idColumn     String   @id @default(uuid())
+  userId       String
+  user         User     @relation(fields: [userId], references: [idUser])
+  title        String   @db.VarChar(30)
+  Task         Task[]
+  creationDate DateTime @default(now()) @map("creationDate")
+
+  @@map("Column")
+}
+
+model Task {
+  idTask String @id @default(uuid())
+  userId String
+  user   User   @relation(fields: [userId], references: [idUser])
+
+  idColumn String @map("idColumn") // Make this field optional by adding `?`
+  column   Column @relation(fields: [idColumn], references: [idColumn], map: "Column_FK")
+
+  title        String   @db.VarChar(50)
+  company      String   @db.VarChar(50)
+  date         DateTime @default(now()) @map("date")
+  tag          Json
+  creationDate DateTime @default(now()) @map("creationDate")
+  description  String   @db.VarChar(300)
+
+  @@map("Task")
+}
+
+model Company {
+  idCompany                        String                             @id @default(uuid())
+  cnpj                             String                             @unique @db.VarChar(36)
+  creationDate                     DateTime                           @default(now()) @map("creationDate")
+  phone                            String?                            @db.VarChar(15)
+  userId                           String
+  user                             User                               @relation(fields: [userId], references: [idUser])
+  RegistrationofNatureofOccurrence RegistrationofNatureofOccurrence[]
+  checklist                        Checklist[]
+  Sectors                          Sectors[]
+  Materials                        Materials[]
+  permitido                        Boolean                            @default(true)
+  Tabel                            Tabel[]
+  companyUser                      companyUser[]
+  Tag                              Tag[]
+
+  @@map("Company")
+}
+
+model RegistrationofNatureofOccurrence {
+  idRegistrationofNatureofOccurrence String   @id @default(uuid())
+  name                               String   @db.VarChar(300)
+  creationDate                       DateTime @default(now()) @map("creationDate")
+  idCompany                          String
+  company                            Company  @relation(fields: [idCompany], references: [idCompany])
+  iduser                             String
+  user                               User     @relation(fields: [iduser], references: [idUser])
+
+  @@map("Registration-of-Nature-of-Occurrence")
+}
+
+model Sectors {
+  idSector  String  @id @default(uuid())
+  name      String
+  userId    String
+  user      User    @relation(fields: [userId], references: [idUser])
+  idCompany String
+  company   Company @relation(fields: [idCompany], references: [idCompany])
+
+  @@unique([userId])
+  @@map("Sectors")
+}
+
+model Checklist {
+  idchecklist  String   @id @default(uuid())
+  fields       String   @db.VarChar(100)
+  creationDate DateTime @default(now()) @map("creationDate")
+  idCompany    String
+  company      Company  @relation(fields: [idCompany], references: [idCompany])
+  iduser       String
+  user         User     @relation(fields: [iduser], references: [idUser])
+
+  @@map("Checklist")
+}
+
+model Materials {
+  idMaterials  String   @id @default(uuid())
+  name         String
+  creationDate DateTime @default(now()) @map("creationDate")
+  idCompany    String
+  company      Company  @relation(fields: [idCompany], references: [idCompany])
+  type         String   @db.VarChar(300)
+
+  @@map("Materials")
+}
+
+model Tabel {
+  idTabel      String   @id @default(uuid())
+  creationDate DateTime @default(now()) @map("creationDate")
+  idCompany    String
+  company      Company  @relation(fields: [idCompany], references: [idCompany])
+  User         User?    @relation(fields: [userIdUser], references: [idUser])
+  userIdUser   String?
+
+  @@unique([idTabel, idCompany])
+  @@map("Tabel")
+}
+
+model companyUser {
+  idCompanyUser String   @id @default(uuid())
+  idCompany     String
+  creationDate  DateTime @default(now()) @map("creationDate")
+  company       Company  @relation(fields: [idCompany], references: [idCompany])
+  idUser        String
+  user          User     @relation(fields: [idUser], references: [idUser])
+
+  @@unique([idCompany, idUser])
+  @@map("companyUser")
+}
+
+model Role {
+  idRole           String             @id @default(uuid())
+  name             String
+  description      String
+  creationDate     DateTime           @default(now()) @map("creationDate")
+  UsersPermissions UsersPermissions[]
+
+  @@map("Role")
+}
+
+// Adicione a operação `ecreate` para o modelo `Role`
+
+model Permission {
+  idPermission     String             @id @default(uuid())
+  creationDate     DateTime           @default(now()) @map("creationDate")
+  name             String
+  description      String
+  UsersPermissions UsersPermissions[]
+
+  @@map("Permission")
+}
+
+model UsersPermissions {
+  idUsersPermissions String @id @default(uuid())
+
+  IdUser String? @map("idUser")
+  User   User?   @relation(fields: [IdUser], references: [idUser], map: "User_FK")
+
+  idPermission String?     @map("idPermission")
+  permission   Permission? @relation(fields: [idPermission], references: [idPermission], map: "Permissions_FK")
+
+  idRole String? @map("idRole")
+  Role   Role?   @relation(fields: [idRole], references: [idRole], map: "Role_FK")
+
+  @@map("Users-Permissions")
+}
+
+model Tag {
+  idTag        String   @id @default(uuid())
+  name         String
+  creationDate DateTime @default(now()) @map("creationDate")
+  idCompany    String
+  company      Company  @relation(fields: [idCompany], references: [idCompany])
+
+  @@map("Tag")
+}
