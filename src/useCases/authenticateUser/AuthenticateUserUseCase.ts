@@ -1,4 +1,4 @@
-import { compare } from 'bcrypt'
+import { compare } from 'bcryptjs'
 import { z } from 'zod'
 import { prisma } from '../../lib/prisma'
 import { GenerateRefreshToken } from '../../provider/GenerateRefreshToken'
