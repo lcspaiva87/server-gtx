@@ -40,6 +40,7 @@ class AuthenticateUserUseCase {
     const refreshToken = await generateRefreshToken.execute(
       userAlreadyExists.idUser,
     )
+    
     return { token, refreshToken }
   }
 }

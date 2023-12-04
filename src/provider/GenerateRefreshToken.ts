@@ -9,8 +9,8 @@ class GenerateRefreshToken {
         expiresIn,
       },
     })
-
-    return refreshToken
+    const {id:newRefreshToken, expiresIn:validad} =refreshToken
+    return {newRefreshToken ,validad }
   }
 }
 export { GenerateRefreshToken }

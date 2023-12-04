@@ -1,3 +1,4 @@
+import cors from '@fastify/cors'
 import jwt from '@fastify/jwt'
 import 'dotenv/config'
 import fastify from 'fastify'
@@ -12,6 +13,7 @@ app.register(userKanban)
 app.register(rolesRoutes)
 app.register(permissionRoutes)
 app.register(tagRoutes)
+app.register(cors, { origin: true })
 app.register(jwt, { secret:  String(process.env.SECRET_TOKEN) })
 const port = parseInt(process.env.PORT || '5000', 10)
 try {

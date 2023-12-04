@@ -44,8 +44,8 @@ class RefreshTokenUserUseCase {
         refreshToken.userId,
       )
 
-      const { expiresIn, id } = newRefreshToken
-      return { token, refreshToken: { expiresIn, token: id } }
+
+      return { token, newRefreshToken }
     }
 
     return { token }
